@@ -61,6 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
       modalVideo.classList.remove('d-none');
       modalImage.classList.add('d-none');
       modalImage.src = '';
+      modalVideo.muted = true;
+      modalVideo.playsInline = true;
+      modalVideo.controls = true;
+      modalVideo.autoplay = true;
+      modalVideo.setAttribute('muted', '');
+      modalVideo.setAttribute('playsinline', '');
       modalVideo.load();
       modalVideo.play().catch(function () { /* ignore */ });
     } else {
