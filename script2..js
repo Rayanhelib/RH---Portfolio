@@ -27,21 +27,27 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---------------------------------------------------------
      2. Hover-to-play preview videos in the portfolio grid
      --------------------------------------------------------- */
+  const isTouchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
   document.querySelectorAll('.hover-video').forEach(function (video) {
     const card = video.closest('.media-card-simple');
     if (!card) return;
 
     video.muted = true;
     video.playsInline = true;
+    video.setAttribute('playsinline', '');
     video.load();
-    video.play().catch(function () { /* autoplay may be blocked, ignore */ });
 
-    card.addEventListener('mouseenter', function () {
+    if (!isTouchDevice) {
       video.play().catch(function () { /* autoplay may be blocked, ignore */ });
-    });
-    card.addEventListener('mouseleave', function () {
-      video.pause();
-    });
+
+      card.addEventListener('mouseenter', function () {
+        video.play().catch(function () { /* autoplay may be blocked, ignore */ });
+      });
+      card.addEventListener('mouseleave', function () {
+        video.pause();
+      });
+    }
   });
 
   /* ---------------------------------------------------------
@@ -57,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modalTitle.textContent = title || '';
 
     if (type === 'video') {
-      modalVideo.src = src;
+      modalVideo.src = encodeURI(src);
       modalVideo.classList.remove('d-none');
       modalImage.classList.add('d-none');
       modalImage.src = '';
@@ -67,8 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
       modalVideo.autoplay = true;
       modalVideo.setAttribute('muted', '');
       modalVideo.setAttribute('playsinline', '');
-      modalVideo.load();
-      modalVideo.play().catch(function () { /* ignore */ });
     } else {
       modalImage.src = src;
       modalImage.alt = title || '';
@@ -81,6 +85,15 @@ document.addEventListener('DOMContentLoaded', function () {
     mediaModalEl.classList.add('show');
     mediaModalEl.removeAttribute('aria-hidden');
     document.body.classList.add('modal-open');
+
+    if (type === 'video') {
+      modalVideo.load();
+      requestAnimationFrame(function () {
+        modalVideo.play().catch(function () {
+          modalVideo.controls = true;
+        });
+      });
+    }
   }
 
   function closeMediaModal() {
