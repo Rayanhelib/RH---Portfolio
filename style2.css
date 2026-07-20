@@ -609,4 +609,13 @@ body.modal-open {
     width: 12rem;
     height: 12rem;
   }
+
+  .exp-media-box {
+    padding: 1rem !important;
+    max-width: 100%;
+  }
+
+  .exp-media-box .ratio {
+    max-height: 250px;
+  }
 }
